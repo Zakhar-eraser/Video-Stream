@@ -2,7 +2,6 @@
 from vidgear.gears import NetGear
 from vidgear.gears import WriteGear
 from time import strftime
-import cv2
 
 # Define NetGear Client at given IP address and define parameters 
 client = NetGear(
@@ -13,26 +12,27 @@ client = NetGear(
     logging=True,
 )
 
-writer = WriteGear(output="{}.mp4".format(strftime("%Y%m%d_%H%M%S")))
-
+writer = None
+frame = None
 # loop over
 while True:
-    # receive frames from network
-    frame = client.recv()
+    try:
+        # receive frames from network
+        frame = client.recv()
 
-    # check for received frame if Nonetype
-    if frame is None:
+        # check for received frame if Nonetype
+        if frame is None:
+            if writer is not None: writer.close()
+            continue
+
+        if writer is None:
+            writer = WriteGear(output="{}.mp4".format(strftime("%Y%m%d_%H%M%S")))
+        # {do something with the frame here}
+
+        writer.write(frame)
+    except KeyboardInterrupt:
         break
 
-    # {do something with the frame here}
-
-    # Show output window
-    cv2.imshow("Output Frame", frame)
-
-    # check for 'q' key if pressed
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
 
 # safely close client
 client.close()

@@ -3,13 +3,12 @@ from vidgear.gears import VideoGear
 from vidgear.gears import NetGear
 import sys
 
-ssh_con = "test@127.0.0.1:22"
+ssh_con = "root@78.140.241.126:22"
 
-if len(sys.argc) > 1:
+if len(sys.argv) > 1:
     ssh_con = sys.argv[1]
 else:
-    print("[HOSTNAME]@[ADDRESS]:[PORT]")
-    ssh_con = input()
+    print(ssh_con + " used")
 
 # activate SSH tunneling with SSH URL, and
 # [BEWARE!!!] Change SSH URL and SSH password with yours for this example !!!
