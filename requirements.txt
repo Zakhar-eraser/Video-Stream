@@ -1,3 +1,4 @@
 opencv-python
 vidgear[core]
 paramiko
+pyzmq
