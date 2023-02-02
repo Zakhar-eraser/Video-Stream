@@ -3,36 +3,36 @@ from vidgear.gears import NetGear
 from vidgear.gears import WriteGear
 from time import strftime
 
-# Define NetGear Client at given IP address and define parameters 
-client = NetGear(
-    address="127.0.0.1", # don't change this
-    port="5454",
-    pattern=1,
-    receive_mode=True,
-    logging=True,
-)
+def create_client(): 
+    return NetGear(
+        address="127.0.0.1", # don't change this
+        port="5454",
+        pattern=2,
+        receive_mode=True,
+        logging=True,
+    )
 
 writer = None
 frame = None
-# loop over
+client = None
 while True:
     try:
-        # receive frames from network
+        if client is None:
+            client = create_client()
         frame = client.recv()
+        if writer is None:
+            writer = WriteGear(output="{}.mp4".format(strftime("%Y%m%d_%H%M%S")))
 
         # check for received frame if Nonetype
         if frame is None:
-            if writer is not None: writer.close()
+            writer.close()
+            client.close()
+            writer = None
+            client = None
             continue
-
-        if writer is None:
-            writer = WriteGear(output="{}.mp4".format(strftime("%Y%m%d_%H%M%S")))
-        # {do something with the frame here}
 
         writer.write(frame)
     except KeyboardInterrupt:
+        if writer is not None: writer.close()
+        if client is not None: client.close()
         break
-
-
-# safely close client
-client.close()
