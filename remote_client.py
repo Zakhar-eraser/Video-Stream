@@ -6,8 +6,8 @@ import cv2
 
 def create_client(): 
     return NetGear(
-        address="127.0.0.1", # don't change this
-        port="5454",
+        address="127.0.0.1",
+        port="80",
         pattern=1,
         receive_mode=True,
         logging=True,
