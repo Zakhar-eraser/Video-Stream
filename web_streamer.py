@@ -1,47 +1,48 @@
-from vidgear.gears import NetGear
-from vidgear.gears.asyncio import WebGear_RTC
-from time import sleep
+from vidgear.gears.asyncio import NetGear_Async
+from vidgear.gears.asyncio import WebGear
+from vidgear.gears.asyncio.helper import reducer
+import asyncio, cv2
+
 import uvicorn
 
-class CustomStreamer:
-    """Custom Streaming using frames recieved via SSH"""
+client = NetGear_Async(
+    address="78.140.241.126",
+    port=80,
+    receive_mode=True,
+    pattern=1,
+    logging=True
+).launch()
 
-    def __init__(self):
-        self._client = None
-        self._running = True
-    
-    def read(self):
-        frame = None
-        if self._running:
-            while frame is None:
-                print("(re)starting connection with streamer")
-                sleep(3)
-                self._client.close()
-                self._client = self._create_client()
-                frame = self._client.recv()
-            
-        return frame
-            
-    def _create_client():
-        return NetGear(
-            address="127.0.0.1",
-            port="5454",
-            pattern=1,
-            receive_mode=True,
-            logging=True,
-        )
-    
-    def stop(self):
-        self._running = False
-        self._client.close()
-        
+async def my_frame_producer():
+
+    async for frame in client.recv_generator():
+
+        frame = await reducer(
+            frame, percentage=50, interpolation=cv2.INTER_AREA
+        )  # reduce frame by 30%
+
+        # handle JPEG encoding
+        encodedImage = cv2.imencode(".jpg", frame)[1].tobytes()
+        # yield frame in byte format
+        yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
+        await asyncio.sleep(0)
+
 def main():
-    options = {
-        "custom_stream": CustomStreamer()
-    }
-    web = WebGear_RTC(logging=True, **options)
+    asyncio.set_event_loop(client.loop)
 
+    # initialize WebGear app without any source
+    web = WebGear(logging=True, enable_infinite_frames = True)
+
+    # add your custom frame producer to config with adequate IP address
+    web.config["generator"] = my_frame_producer
+
+    # run this app on Uvicorn server at address http://localhost:8000/
     uvicorn.run(web(), host="0.0.0.0", port=8000)
+
+    # safely close client
+    client.close()
+
+    # close app safely
     web.shutdown()
 
 if __name__ == '__main__':
