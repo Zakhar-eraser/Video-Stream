@@ -1,13 +1,13 @@
 # import required libraries
 from vidgear.gears import NetGear
 from vidgear.gears import WriteGear
-from time import strftime
+from time import strftime    
 
 def create_client(): 
     return NetGear(
         address="127.0.0.1", # don't change this
         port="5454",
-        pattern=2,
+        pattern=1,
         receive_mode=True,
         logging=True,
     )

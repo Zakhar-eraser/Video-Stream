@@ -1,4 +1,4 @@
 opencv-python
-vidgear[core]
+vidgear[asyncio]
 paramiko
 pyzmq

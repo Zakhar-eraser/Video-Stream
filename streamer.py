@@ -1,7 +1,7 @@
 # import required libraries
 from vidgear.gears import CamGear
 from vidgear.gears import NetGear
-import sys
+import sys     
 
 def run():
     ssh_con = "root@78.140.241.126"
@@ -23,7 +23,7 @@ def run():
     server = NetGear(
         address="127.0.0.1", # don't change this
         port="5454",
-        pattern=2,
+        pattern=1,
         logging=True,
         **options
     )
