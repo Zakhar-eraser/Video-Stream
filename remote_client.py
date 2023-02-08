@@ -1,7 +1,8 @@
 # import required libraries
 from vidgear.gears import NetGear
 from vidgear.gears import WriteGear
-from time import strftime    
+from time import strftime
+import cv2
 
 def create_client(): 
     return NetGear(
@@ -15,7 +16,8 @@ def create_client():
 writer = None
 frame = None
 client = None
-while True:
+running = True
+while running:
     try:
         if client is None:
             client = create_client()
@@ -30,9 +32,16 @@ while True:
             writer = None
             client = None
             continue
-
+        cv2.namedWindow("Output Frame")
+        cv2.moveWindow("Output Frame", 0, 0)
+        cv2.imshow("Output Frame", frame)
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            raise KeyboardInterrupt()
         writer.write(frame)
     except KeyboardInterrupt:
+        running = False
         if writer is not None: writer.close()
         if client is not None: client.close()
-        break
+    
+    cv2.destroyAllWindows()
