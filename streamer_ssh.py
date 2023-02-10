@@ -1,18 +1,17 @@
 # import required libraries
 from vidgear.gears import NetGear
 from vidgear.gears import CamGear
-import sys
-import asyncio
 
 def run():
     # Open live video stream on webcam at first index(i.e. 0) device
-    stream = CamGear(source=0).start()
+    options = {"CAP_PROP_FPS":30}
+    stream = CamGear(source=0, **options).start()
 
     # Define NetGear server at given IP address and define parameters
     server = NetGear(
         address="127.0.0.1", # don't change this
         port="5454",
-        pattern=2,
+        pattern=1,
         logging=True,
         ssh_tunnel_mode="root@78.140.241.126",
         ssh_tunnel_keyfile="C:/Users/79922/.ssh/id_rsa"
