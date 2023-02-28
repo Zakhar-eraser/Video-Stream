@@ -4,7 +4,7 @@ from vidgear.gears import CamGear
 
 def run():
     # Open live video stream on webcam at first index(i.e. 0) device
-    options = {"CAP_PROP_FPS":30}
+    options = {"CAP_PROP_FPS":30, "jpeg_compression": True, "jpeg_compression_quality": 50}
     stream = CamGear(source=0, **options).start()
 
     # Define NetGear server at given IP address and define parameters
