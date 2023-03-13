@@ -25,7 +25,7 @@ async def my_frame_producer():
 
 def main():
     # initialize WebGear app without any source
-    options = {"jpeg_compression_quality": 10, "frame_size_reduction": 50}
+    options = {"jpeg_compression_quality": 10, "frame_size_reduction": 10}
     web = WebGear(logging=True, enable_infinite_frames = True, **options)
     web.config["generator"] = my_frame_producer
 

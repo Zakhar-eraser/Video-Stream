@@ -4,15 +4,17 @@ from vidgear.gears import CamGear
 
 def run():
     # Open live video stream on webcam at first index(i.e. 0) device
-    options = {"CAP_PROP_FPS": 30, "jpeg_compression": True, "jpeg_compression_quality": 10}
-    stream = CamGear(source=6, **options).start()
+    cam_opts = {"CAP_PROP_FPS": 30}
+    stream = CamGear(source=6, **cam_opts).start()
 
     # Define NetGear server at given IP address and define parameters
+    net_opts = {"jpeg_compression": True, "jpeg_compression_quality": 10}
     server = NetGear(
         address="10.8.0.1",
         port="5454",
         pattern=1,
         logging=True,
+        **net_opts
     )
 
     while True:
