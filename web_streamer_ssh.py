@@ -1,6 +1,5 @@
 from vidgear.gears import NetGear
 from vidgear.gears.asyncio import WebGear
-from vidgear.gears.asyncio.helper import reducer
 import asyncio
 import uvicorn
 import cv2
@@ -26,10 +25,11 @@ async def my_frame_producer():
 
 def main():
     # initialize WebGear app without any source
-    web = WebGear(logging=True, enable_infinite_frames = True)
+    options = {"jpeg_compression_quality": 50, "frame_size_reduction": 50}
+    web = WebGear(logging=True, enable_infinite_frames = True, **options)
     web.config["generator"] = my_frame_producer
 
-    uvicorn.run(web(), host="0.0.0.0", port=8000)
+    uvicorn.run(web(), host="78.140.241.126", port=8000)
 
     # safely close client
     client.close()
