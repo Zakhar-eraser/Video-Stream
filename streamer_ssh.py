@@ -4,8 +4,8 @@ from vidgear.gears import CamGear
 
 def run():
     # Open live video stream on webcam at first index(i.e. 0) device
-    options = {"CAP_PROP_FPS":30}
-    stream = CamGear(source=0, **options).start()
+    options = {"CAP_PROP_FPS":30, "jpeg_compression_quality": 40}
+    stream = CamGear(source=6, **options).start()
 
     # Define NetGear server at given IP address and define parameters
     server = NetGear(
@@ -14,7 +14,7 @@ def run():
         pattern=1,
         logging=True,
         ssh_tunnel_mode="root@78.140.241.126",
-        ssh_tunnel_keyfile="C:/Users/79922/.ssh/id_rsa"
+        ssh_tunnel_keyfile="/home/uav_center/.ssh/id_rsa"
     )
 
     #asyncio.set_event_loop(server.loop)
